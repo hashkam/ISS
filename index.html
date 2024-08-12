@@ -15,6 +15,8 @@
         <h3>Current Coordinates of the International Space Station</h3>
         <p>Latitude: <b><span id="lat"></span></b></p>
         <p>Longitude: <b><span id="lon"></span></b></p>
+        <p>Velocity: <b><span id="vel"></span> <span id="units1"></span> per second</b></p>
+        <p>Altitude: <b><span id="alt"></span> <span id="units"></span></b></p>
         <div id="map"></div>
         <script>
             const iss_api_url = "https://api.wheretheiss.at/v1/satellites/25544";
@@ -43,6 +45,10 @@
             getISS().then(coordinates => {
                 document.getElementById("lat").textContent = coordinates.latitude;
                 document.getElementById("lon").textContent = coordinates.longitude;
+                document.getElementById("vel").textContent = coordinates.velocity;
+                document.getElementById("alt").textContent = coordinates.altitude;
+                document.getElementById("units").textContent = coordinates.units;
+                document.getElementById("units1").textContent = coordinates.units;
 
                 // Update map
                 if (marker) { // if marker exists, remove it
