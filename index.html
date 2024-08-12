@@ -1,12 +1,52 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Website</title>
-    <h1>Hello</h1>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <style>
+        #map { height: 180px; }
+    </style>
 </head>
 <body>
-    
-</body>
+    <h1>Hello</h1>
+        <p> Latitude: <span id="lat"></span></p>
+        <p> Longitude: <span id="lon"></span></p>
+        <div id="map"></div>
+        <script>
+            const iss_api_url = "https://api.wheretheiss.at/v1/satellites/25544";
+            let map = L.map('map').setView([0, 0], 1); // Initialize map
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+            }).addTo(map);
+
+            let marker;
+
+            // Define custom icon
+            let satelliteIcon = L.icon({
+                iconUrl: 'ISS.png', // replace with the path to your icon
+                iconSize: [40, 40   ], // size of the icon
+                iconAnchor: [20, 20], // point of the icon which will correspond to marker's location
+            });
+
+            async function getISS() {
+                const response = await fetch(iss_api_url);
+                const data = await response.json();
+                console.log(data);
+                return data;
+            }
+            getISS().then(coordinates => {
+                document.getElementById("lat").textContent = coordinates.latitude;
+                document.getElementById("lon").textContent = coordinates.longitude;
+
+                // Update map
+                if (marker) { // if marker exists, remove it
+                    map.removeLayer(marker);
+                }
+                marker = L.marker([coordinates.latitude, coordinates.longitude], {icon: satelliteIcon}).addTo(map); // Add new marker with custom icon
+            });
+        </script>
+    </body>
 </html>
