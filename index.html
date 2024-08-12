@@ -43,10 +43,13 @@
             }
 
             getISS().then(coordinates => {
+                let velocity = parseFloat(coordinates.velocity).toLocaleString();
+                let altitude = parseFloat(coordinates.altitude).toLocaleString();
+
                 document.getElementById("lat").textContent = coordinates.latitude;
                 document.getElementById("lon").textContent = coordinates.longitude;
-                document.getElementById("vel").textContent = coordinates.velocity;
-                document.getElementById("alt").textContent = coordinates.altitude;
+                document.getElementById("vel").textContent = velocity;
+                document.getElementById("alt").textContent = altitude;
                 document.getElementById("units").textContent = coordinates.units;
                 document.getElementById("units1").textContent = coordinates.units;
 
