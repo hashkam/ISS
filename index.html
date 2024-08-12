@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <style>
-        #map { height: 600px; }
+        #map {
+            height: 500px;
+        }
     </style>
 </head>
     <body>
@@ -17,6 +19,7 @@
         <p>Longitude: <b><span id="lon"></span></b></p>
         <p>Velocity: <b><span id="vel"></span> <span id="units1"></span> per second</b></p>
         <p>Altitude: <b><span id="alt"></span> <span id="units"></span></b></p>
+        <button id="refresh">Refresh</button>
         <div id="map"></div>
         <script>
             const iss_api_url = "https://api.wheretheiss.at/v1/satellites/25544";
@@ -42,23 +45,29 @@
                 return data;
             }
 
-            getISS().then(coordinates => {
-                let velocity = parseFloat(coordinates.velocity).toLocaleString();
-                let altitude = parseFloat(coordinates.altitude).toLocaleString();
+            function updateMap() {
+                getISS().then(coordinates => {
+                    let velocity = parseFloat(coordinates.velocity).toLocaleString();
+                    let altitude = parseFloat(coordinates.altitude).toLocaleString();
+    
+                    document.getElementById("lat").textContent = coordinates.latitude;
+                    document.getElementById("lon").textContent = coordinates.longitude;
+                    document.getElementById("vel").textContent = velocity;
+                    document.getElementById("alt").textContent = altitude;
+                    document.getElementById("units").textContent = coordinates.units;
+                    document.getElementById("units1").textContent = coordinates.units;
+    
+                    // Update map
+                    if (marker) { // if marker exists, remove it
+                        map.removeLayer(marker);
+                    }
+                    marker = L.marker([coordinates.latitude, coordinates.longitude], {icon: satelliteIcon}).addTo(map); // Add new marker with custom icon
+                });
+            }
 
-                document.getElementById("lat").textContent = coordinates.latitude;
-                document.getElementById("lon").textContent = coordinates.longitude;
-                document.getElementById("vel").textContent = velocity;
-                document.getElementById("alt").textContent = altitude;
-                document.getElementById("units").textContent = coordinates.units;
-                document.getElementById("units1").textContent = coordinates.units;
+            updateMap();
 
-                // Update map
-                if (marker) { // if marker exists, remove it
-                    map.removeLayer(marker);
-                }
-                marker = L.marker([coordinates.latitude, coordinates.longitude], {icon: satelliteIcon}).addTo(map); // Add new marker with custom icon
-            });
+            document.getElementById('refresh').addEventListener('click', updateMap);
             
         </script>
     </body>
